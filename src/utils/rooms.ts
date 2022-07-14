@@ -178,3 +178,9 @@ export function getFieldsForThirdPartyLocation(
     fields[requiredFields[requiredFields.length - 1]] = userInput;
     return fields;
 }
+
+// Similar to matrix-react-sdk's MatrixTools.getDisplayAliasForRoom
+// but works with the objects we get from the public room list
+export function getDisplayAliasForRoom(room: IPublicRoomsChunkRoom) {
+    return getDisplayAliasForAliasSet(room.canonical_alias, room.aliases);
+}
