@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import * as React from "react";
+// eslint-disable-next-line deprecate/import
 import { mount, ReactWrapper } from "enzyme";
 import { RoomMember } from "matrix-js-sdk/src/models/room-member";
 import { MatrixEvent } from "matrix-js-sdk/src/models/event";
@@ -61,7 +62,7 @@ describe("MessageComposer", () => {
 
         expect(wrapper.find("SendMessageComposer")).toHaveLength(0);
         expect(wrapper.find("MessageComposerButtons")).toHaveLength(0);
-        expect(wrapper.find("p").text()).toContain("room has been replaced");
+        expect(wrapper.find(".mx_MessageComposer_roomReplaced_header")).toHaveLength(1);
     });
 });
 
