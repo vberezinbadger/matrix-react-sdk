@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { IPublicRoomsChunkRoom, MatrixClient } from "matrix-js-sdk/src/client";
+import { IProtocol, IPublicRoomsChunkRoom, MatrixClient } from "matrix-js-sdk/src/client";
 import { ViewRoom as ViewRoomEvent } from "@matrix-org/analytics-events/types/typescript/ViewRoom";
 
 import { Action } from "../dispatcher/actions";
@@ -23,6 +23,8 @@ import { getE2EEWellKnown } from "./WellKnownUtils";
 import dis from "../dispatcher/dispatcher";
 import { getDisplayAliasForAliasSet } from "../Rooms";
 import { _t } from "../languageHandler";
+
+export type Protocols = Record<string, IProtocol>;
 
 export function privateShouldBeEncrypted(): boolean {
     const e2eeWellKnown = getE2EEWellKnown();
