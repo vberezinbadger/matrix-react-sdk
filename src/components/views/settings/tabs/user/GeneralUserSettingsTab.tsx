@@ -196,7 +196,8 @@ export default class GeneralUserSettingsTab extends React.Component<IProps, ISta
     private async getExternalAccountManagementUrl(): Promise<void> {
         const cli = MatrixClientPeg.get();
 
-        const externalAccountManagementUrl = (await cli.waitForClientWellKnown())['m.authentication']?.account;
+        const externalAccountManagementUrl =
+            (await cli.waitForClientWellKnown())['org.matrix.msc2965.authentication']?.account;
 
         this.setState({ externalAccountManagementUrl });
     }
