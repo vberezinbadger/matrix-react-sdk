@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { IInstance, IProtocol, IPublicRoomsChunkRoom, MatrixClient } from "matrix-js-sdk/src/client";
+import { IPublicRoomsChunkRoom, MatrixClient } from "matrix-js-sdk/src/client";
 import { ViewRoom as ViewRoomEvent } from "@matrix-org/analytics-events/types/typescript/ViewRoom";
 
 import { Action } from "../dispatcher/actions";
@@ -23,9 +23,6 @@ import { getE2EEWellKnown } from "./WellKnownUtils";
 import dis from "../dispatcher/dispatcher";
 import { getDisplayAliasForAliasSet } from "../Rooms";
 import { _t } from "../languageHandler";
-import { instanceForInstanceId, protocolNameForInstanceId, ALL_ROOMS, Protocols } from "./DirectoryUtils";
-import SdkConfig from "../SdkConfig";
-import { GenericError } from "./error";
 
 export function privateShouldBeEncrypted(): boolean {
     const e2eeWellKnown = getE2EEWellKnown();
@@ -97,87 +94,6 @@ export const showRoom = (
     }
     dis.dispatch(payload);
 };
-
-interface IJoinRoomByAliasOpts {
-    instanceId?: string;
-    roomServer?: string;
-    protocols: Protocols;
-    metricsTrigger: ViewRoomEvent["trigger"];
-}
-
-export function joinRoomByAlias(cli: MatrixClient, alias: string, {
-    instanceId,
-    roomServer,
-    protocols,
-    metricsTrigger,
-}: IJoinRoomByAliasOpts): void {
-    // If we don't have a particular instance id selected, just show that rooms alias
-    if (!instanceId || instanceId === ALL_ROOMS) {
-        // If the user specified an alias without a domain, add on whichever server is selected
-        // in the dropdown
-        if (!alias.includes(':')) {
-            alias = alias + ':' + roomServer;
-        }
-        showRoom(cli, null, {
-            roomAlias: alias,
-            autoJoin: true,
-            metricsTrigger,
-        });
-    } else {
-        // This is a 3rd party protocol. Let's see if we can join it
-        const protocolName = protocolNameForInstanceId(protocols, instanceId);
-        const instance = instanceForInstanceId(protocols, instanceId);
-        const fields = protocolName
-            ? getFieldsForThirdPartyLocation(alias, protocols[protocolName], instance)
-            : null;
-        if (!fields) {
-            const brand = SdkConfig.get().brand;
-            throw new GenericError(
-                _t('Unable to join network'),
-                _t('%(brand)s does not know how to join a room on this network', { brand }),
-            );
-        }
-        cli.getThirdpartyLocation(protocolName, fields).then((resp) => {
-            if (resp.length > 0 && resp[0].alias) {
-                showRoom(cli, null, {
-                    roomAlias: resp[0].alias,
-                    autoJoin: true,
-                    metricsTrigger,
-                });
-            } else {
-                throw new GenericError(
-                    _t('Room not found'),
-                    _t('Couldn\'t find a matching Matrix room'),
-                );
-            }
-        }, (e) => {
-            throw new GenericError(
-                _t('Fetching third party location failed'),
-                _t('Unable to look up room ID from server'),
-            );
-        });
-    }
-}
-
-export function getFieldsForThirdPartyLocation(
-    userInput: string,
-    protocol: IProtocol,
-    instance: IInstance,
-): { searchFields?: string[] } | null {
-    // make an object with the fields specified by that protocol. We
-    // require that the values of all but the last field come from the
-    // instance. The last is the user input.
-    const requiredFields = protocol.location_fields;
-    if (!requiredFields) return null;
-    const fields = {};
-    for (let i = 0; i < requiredFields.length - 1; ++i) {
-        const thisField = requiredFields[i];
-        if (instance.fields[thisField] === undefined) return null;
-        fields[thisField] = instance.fields[thisField];
-    }
-    fields[requiredFields[requiredFields.length - 1]] = userInput;
-    return fields;
-}
 
 // Similar to matrix-react-sdk's MatrixTools.getDisplayAliasForRoom
 // but works with the objects we get from the public room list

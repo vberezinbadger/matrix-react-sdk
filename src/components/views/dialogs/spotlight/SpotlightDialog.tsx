@@ -103,7 +103,7 @@ interface SpotlightProps {
 }
 
 export function openSpotlight(props: SpotlightProps = {}) {
-    Modal.createDialog(SpotlightDialog, props, "mx_SpotlightDialog_wrapper", false, true);
+    Modal.createDialog(RovingSpotlightDialog, props, "mx_SpotlightDialog_wrapper", false, true);
 }
 
 function refIsForRecentlyViewed(ref: RefObject<HTMLElement>): boolean {
