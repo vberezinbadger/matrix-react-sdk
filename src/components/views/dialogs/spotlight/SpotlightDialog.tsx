@@ -1249,5 +1249,3 @@ const RovingSpotlightDialog: React.FC<IDialogProps & SpotlightProps> = (props) =
         { () => <SpotlightDialog {...props} /> }
     </RovingTabIndexProvider>;
 };
-
-export default RovingSpotlightDialog;
