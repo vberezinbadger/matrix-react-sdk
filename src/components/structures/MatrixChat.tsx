@@ -134,7 +134,7 @@ import { RightPanelPhases } from "../../stores/right-panel/RightPanelStorePhases
 import RightPanelStore from "../../stores/right-panel/RightPanelStore";
 import { TimelineRenderingType } from "../../contexts/RoomContext";
 import { UseCaseSelection } from '../views/elements/UseCaseSelection';
-import { Filter, openSpotlight } from '../views/dialogs/spotlight/SpotlightDialog';
+import SpotlightDialog, { Filter } from '../views/dialogs/spotlight/SpotlightDialog';
 import { OpenSpotlightPayload } from '../../dispatcher/payloads/OpenSpotlightPayload';
 import { ValidatedServerConfig } from '../../utils/ValidatedServerConfig';
 import { isLocalRoom } from '../../utils/localRoom/isLocalRoom';
@@ -700,7 +700,10 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
                 this.viewSomethingBehindModal();
                 break;
             case Action.OpenSpotlight: {
-                openSpotlight({ initialText: payload.initialText, initialFilter: payload.initialFilter });
+                Modal.createDialog(SpotlightDialog, {
+                    initialText: payload.initialText,
+                    initialFilter: payload.initialFilter,
+                }, "mx_SpotlightDialog_wrapper", false, true);
 
                 // View the welcome or home page if we need something to look at
                 this.viewSomethingBehindModal();

@@ -102,10 +102,6 @@ interface SpotlightProps {
     initialFilter?: Filter;
 }
 
-export function openSpotlight(props: SpotlightProps = {}) {
-    Modal.createDialog(RovingSpotlightDialog, props, "mx_SpotlightDialog_wrapper", false, true);
-}
-
 function refIsForRecentlyViewed(ref: RefObject<HTMLElement>): boolean {
     return ref.current?.id?.startsWith("mx_SpotlightDialog_button_recentlyViewed_") === true;
 }
@@ -1249,3 +1245,5 @@ const RovingSpotlightDialog: React.FC<IDialogProps & SpotlightProps> = (props) =
         { () => <SpotlightDialog {...props} /> }
     </RovingTabIndexProvider>;
 };
+
+export default RovingSpotlightDialog;
