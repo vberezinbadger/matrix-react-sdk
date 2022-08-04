@@ -126,12 +126,11 @@ export default class GeneralUserSettingsTab extends React.Component<IProps, ISta
         // the enabled flag value.
         const canChangePassword = !changePasswordCap || changePasswordCap['enabled'] !== false;
 
-        // FIXME: do this lookup in parallel (https://github.com/matrix-org/matrix-react-sdk/pull/8727#discussion_r885908004)
-        const externalAccountManagementUrl = (await cli.waitForClientWellKnown())['m.authentication']?.account;
-
-        this.setState({ serverSupportsSeparateAddAndBind, canChangePassword, externalAccountManagementUrl });
+        this.setState({ serverSupportsSeparateAddAndBind, canChangePassword });
 
         this.getThreepidState();
+
+        this.getExternalAccountManagementUrl();
     }
 
     public async componentDidMount(): Promise<void> {
@@ -192,6 +191,14 @@ export default class GeneralUserSettingsTab extends React.Component<IProps, ISta
             msisdns: threepids.filter((a) => a.medium === 'msisdn'),
             loading3pids: false,
         });
+    }
+
+    private async getExternalAccountManagementUrl(): Promise<void> {
+        const cli = MatrixClientPeg.get();
+
+        const externalAccountManagementUrl = (await cli.waitForClientWellKnown())['m.authentication']?.account;
+
+        this.setState({ externalAccountManagementUrl });
     }
 
     private async checkTerms(): Promise<void> {
