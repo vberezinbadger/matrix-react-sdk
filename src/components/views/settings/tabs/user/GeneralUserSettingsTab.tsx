@@ -364,7 +364,7 @@ export default class GeneralUserSettingsTab extends React.Component<IProps, ISta
             passwordChangeForm = null;
         }
 
-        let externalAccountManagement = null;
+        let externalAccountManagement: JSX.Element;
         if (this.state.externalAccountManagementUrl) {
             const externalAccountManagementText = _t(
                 'You can manage your account <a>here</a>.',
