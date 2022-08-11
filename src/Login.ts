@@ -52,6 +52,7 @@ export interface ISSOFlow {
     type: "m.login.sso" | "m.login.cas";
     // eslint-disable-next-line camelcase
     identity_providers?: IIdentityProvider[];
+    "delegated_oidc_compatibility"?: boolean;
     "org.matrix.msc3824.delegated_oidc_compatibility"?: boolean;
 }
 
@@ -67,6 +68,9 @@ interface ILoginParams {
     initial_device_display_name?: string;
 }
 /* eslint-enable camelcase */
+
+export const DELEGATED_OIDC_COMPATIBILITY = "delegated_oidc_compatibility";
+export const UNSTABLE_DELEGATED_OIDC_COMPATIBILITY = "org.matrix.msc3824.delegated_oidc_compatibility";
 
 export default class Login {
     private hsUrl: string;
@@ -127,7 +131,8 @@ export default class Login {
         const { flows }: { flows: LoginFlow[] } = await client.loginFlows();
         // If an m.login.sso flow is present that is flagged as being for MSC3824 OIDC compatibility then we only return that flow
         const oidcCompatibilityFlow =
-            flows.find(f => f.type === "m.login.sso" && f["org.matrix.msc3824.delegated_oidc_compatibility"]);
+            flows.find(f => f.type === "m.login.sso"
+                && (f[DELEGATED_OIDC_COMPATIBILITY] || f[UNSTABLE_DELEGATED_OIDC_COMPATIBILITY]));
         this.flows = oidcCompatibilityFlow ? [oidcCompatibilityFlow] : flows;
         return this.flows;
     }

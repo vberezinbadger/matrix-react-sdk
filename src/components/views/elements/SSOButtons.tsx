@@ -23,7 +23,10 @@ import { Signup } from "@matrix-org/analytics-events/types/typescript/Signup";
 import PlatformPeg from "../../../PlatformPeg";
 import AccessibleButton from "./AccessibleButton";
 import { _t } from "../../../languageHandler";
-import { IdentityProviderBrand, IIdentityProvider, ISSOFlow } from "../../../Login";
+import {
+    IdentityProviderBrand, IIdentityProvider, ISSOFlow,
+    DELEGATED_OIDC_COMPATIBILITY, UNSTABLE_DELEGATED_OIDC_COMPATIBILITY,
+} from "../../../Login";
 import AccessibleTooltipButton from "./AccessibleTooltipButton";
 import { mediaFromMxc } from "../../../customisations/Media";
 import { PosthogAnalytics } from "../../../PosthogAnalytics";
@@ -87,7 +90,7 @@ const SSOButton: React.FC<ISSOButtonProps> = ({
     let label: string;
     if (idp) {
         label = _t("Continue with %(provider)s", { provider: idp.name });
-    } else if (flow["org.matrix.msc3824.delegated_oidc_compatibility"]) {
+    } else if (flow[DELEGATED_OIDC_COMPATIBILITY] || flow[UNSTABLE_DELEGATED_OIDC_COMPATIBILITY]) {
         label = _t("Continue");
     } else {
         label = _t("Sign in with single sign-on");
