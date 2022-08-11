@@ -372,7 +372,7 @@ export default class GeneralUserSettingsTab extends React.Component<IProps, ISta
                 {
                     'a': (sub) => <a
                         href={this.state.externalAccountManagementUrl}
-                        rel="noopener"
+                        rel="noreferrer noopener"
                         target="_blank"
                     >
                         { sub }
