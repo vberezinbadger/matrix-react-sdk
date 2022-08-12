@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import { _t } from "../../../../../languageHandler";
 import Spinner from '../../../elements/Spinner';
@@ -28,6 +28,7 @@ import SettingsTab from '../SettingsTab';
 
 const SessionManagerTab: React.FC = () => {
     const { devices, currentDeviceId, isLoading } = useOwnDevices();
+    const [filter, setFilter] = useState<DeviceSecurityVariation>();
 
     const { [currentDeviceId]: currentDevice, ...otherDevices } = devices;
     const shouldShowOtherSessions = Object.keys(otherDevices).length > 0;
@@ -69,7 +70,11 @@ const SessionManagerTab: React.FC = () => {
                 )}
                 data-testid='other-sessions-section'
             >
-                <FilteredDeviceList devices={otherDevices} />
+                <FilteredDeviceList
+                    devices={otherDevices}
+                    filter={filter}
+                    onFilterChange={setFilter}
+                />
             </SettingsSubsection>
         }
     </SettingsTab>;
